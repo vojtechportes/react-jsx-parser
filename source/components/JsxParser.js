@@ -86,7 +86,8 @@ export default class JsxParser extends Component {
           this.props.onError(new Error(`The expression '${expression.callee}' could not be resolved, resulting in an undefined return value.`))
           return undefined
         }
-        return parsedCallee(...expression.arguments.map(this.parseExpression))
+        const parsedArgs = expression.arguments.map(this.parseExpression)
+        return parsedCallee(...parsedArgs)
       case 'ConditionalExpression':
         return this.parseExpression(expression.test)
           ? this.parseExpression(expression.consequent)
@@ -113,6 +114,17 @@ export default class JsxParser extends Component {
           object[prop.key.name || prop.key.value] = this.parseExpression(prop.value)
         })
         return object
+      case 'ArrowFunctionExpression':
+        const params = expression.params.map(x => x.name)
+
+        return (...args) => {
+          console.log(args)
+          args.map((value, index) => {
+            this.props.bindings[params[index]] = value
+          })
+
+          return this.parseExpression(expression.body)
+        }
       case 'UnaryExpression':
         switch (expression.operator) {
           case '+': return expression.argument.value
@@ -120,6 +132,8 @@ export default class JsxParser extends Component {
           case '!': return !expression.argument.value
         }
         return undefined
+      default:
+        throw new Error(`Unknown expression type: ${expression.type}`, expression)
     }
   }
 
