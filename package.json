@@ -11,7 +11,7 @@
   "main": "lib/react-jsx-parser.min.js",
   "name": "@vojtechportes/react-jsx-parser",
   "repository": "vojtechportes/react-jsx-parser",
-  "version": "1.24.0",
+  "version": "1.24.1",
   "dependencies": {
     "acorn": "^7.1.1",
     "acorn-jsx": "^5.2.0"
