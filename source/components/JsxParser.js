@@ -161,7 +161,22 @@ export default class JsxParser extends Component {
         return false;
       case "MemberExpression":
         const thisObj = this.parseExpression(expression.object) || {};
-        const member = thisObj[expression.property.name];
+        let member;
+
+        if (expression.property.type === 'Literal') {
+          member = thisObj[expression.property.value];
+        } else if (expression.property.type === 'Identifier') {
+          if (!thisObj[expression.property.name]) {
+            if (this.props.bindings[expression.property.name]) {
+              member = thisObj[this.props.bindings[expression.property.name]];
+            }
+          } else {
+            member = thisObj[expression.property.name];
+          }
+        } else {
+          member = thisObj[expression.property.name];
+        }
+
         if (typeof member === "function") return member.bind(thisObj);
         return member;
       case "ObjectExpression":
