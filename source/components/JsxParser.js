@@ -166,9 +166,11 @@ export default class JsxParser extends Component {
         if (expression.property.type === 'Literal') {
           member = thisObj[expression.property.value];
         } else if (expression.property.type === 'Identifier') {
-          if (!thisObj[expression.property.name]) {
+          if (typeof thisObj[expression.property.name] === 'undefined') {
             if (this.props.bindings[expression.property.name]) {
               member = thisObj[this.props.bindings[expression.property.name]];
+            } else {
+              member = thisObj[expression.property.name];
             }
           } else {
             member = thisObj[expression.property.name];
